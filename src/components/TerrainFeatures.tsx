@@ -5,11 +5,8 @@ import type { TerrainType } from '../../shared/types';
 // Reusable materials to save performance
 const treeMaterial = new THREE.MeshStandardMaterial({ color: '#1a472a', roughness: 0.8 });
 const trunkMaterial = new THREE.MeshStandardMaterial({ color: '#4d3319', roughness: 1 });
-const rockMaterial = new THREE.MeshStandardMaterial({ color: '#666666', roughness: 0.6 });
-const snowMaterial = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.3 });
 const wheatMaterial = new THREE.MeshStandardMaterial({ color: '#e6c200', roughness: 0.8 });
 const sheepMaterial = new THREE.MeshStandardMaterial({ color: '#f0f0f0', roughness: 0.9 });
-const brickMaterial = new THREE.MeshStandardMaterial({ color: '#8b4513', roughness: 0.7 });
 
 interface TerrainFeaturesProps {
   terrain: TerrainType;
