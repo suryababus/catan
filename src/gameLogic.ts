@@ -1,5 +1,5 @@
-import type { TerrainType, ResourceType, Resources, HexData } from './types';
 import { TERRAIN_RESOURCES } from './types';
+import type { Resources, HexData } from './types';
 
 export type PlayerColor = 'red' | 'blue' | 'white' | 'orange';
 

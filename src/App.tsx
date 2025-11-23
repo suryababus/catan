@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, Sky } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import GameBoard from './components/GameBoard';
 import { GameHUD } from './components/GameHUD';
 import { LobbyOverlay } from './components/LobbyOverlay';

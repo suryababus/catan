@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import * as THREE from 'three';
 import type { TerrainType } from '../../shared/types';
 import { MountainFeature } from './MountainFeature';
 import { BrickFeature } from './BrickFeature';
@@ -8,10 +7,6 @@ import { SheepFeature } from './SheepFeature';
 import { WheatFeature } from './WheatFeature';
 
 // Reusable materials to save performance
-const treeMaterial = new THREE.MeshStandardMaterial({ color: '#1a472a', roughness: 0.8 });
-const trunkMaterial = new THREE.MeshStandardMaterial({ color: '#4d3319', roughness: 1 });
-const wheatMaterial = new THREE.MeshStandardMaterial({ color: '#e6c200', roughness: 0.8 });
-const sheepMaterial = new THREE.MeshStandardMaterial({ color: '#f0f0f0', roughness: 0.9 });
 
 interface TerrainFeaturesProps {
   terrain: TerrainType;

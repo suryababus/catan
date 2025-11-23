@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLoader } from '@react-three/fiber';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import { STLLoader } from 'three-stdlib';
 import brickUrl from '../assets/3d/brick.stl';
 import * as THREE from 'three';
 

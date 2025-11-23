@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLoader } from '@react-three/fiber';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import { STLLoader } from 'three-stdlib';
 import forestUrl from '../assets/3d/forest.stl';
 import * as THREE from 'three';
 
