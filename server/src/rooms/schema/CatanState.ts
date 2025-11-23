@@ -63,6 +63,7 @@ export class CatanState extends Schema {
   @type({ map: PlayerState }) players = new MapSchema<PlayerState>();
   @type(['string']) turnOrder = new ArraySchema<string>();
   @type([PlacedStructureState]) placedStructures = new ArraySchema<PlacedStructureState>();
+  @type({ map: PlayerResourcesState }) lastDistributedResources = new MapSchema<PlayerResourcesState>();
   @type(['string']) gameLog = new ArraySchema<string>();
   @type('string') gamePhase: string = 'LOBBY';
   @type('string') turnPhase: string = 'LOBBY';

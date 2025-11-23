@@ -112,6 +112,7 @@ function App() {
   const isSetupPhase = state?.gamePhase?.startsWith('SETUP') ?? false;
   const currentPlayerColor = currentPlayer?.color ?? 'red';
   const diceRoll = state && state.diceRoll > 0 ? state.diceRoll : null;
+  const lastDistributedResources = state?.lastDistributedResources ?? {};
   const gameLog = state?.gameLog ?? [];
   const currentTurnSession = state?.turnOrder?.[currentPlayerIndex] ?? null;
   const isLocalTurn = Boolean(
@@ -259,15 +260,25 @@ function App() {
           canRollDice={canRollDice}
           canEndTurn={canEndTurn}
           actionHint={actionHint}
+          lastDistributedResources={lastDistributedResources}
         />
       )}
 
       <Canvas shadows camera={{ position: [0, 12, 12], fov: 45 }}>
-        <color attach="background" args={['#87CEEB']} />
-        <Sky sunPosition={[10, 20, 10]} />
-        <Environment preset="forest" />
-        <ambientLight intensity={0.3} />
-        <directionalLight
+        <color attach="background" args={['#050505']} />
+        <ambientLight intensity={0.4} color="#ffeebb" />
+        <hemisphereLight intensity={0.3} groundColor="#332200" color="#ddeeff" />
+        <pointLight 
+            position={[0, 15, 0]} 
+            intensity={800} 
+            distance={60} 
+            decay={2} 
+            color="#fff5e0" 
+            castShadow 
+            shadow-mapSize={[2048, 2048]}
+            shadow-bias={-0.0001}
+        />
+        {/* <directionalLight
           position={[10, 20, 10]}
           intensity={1.5}
           castShadow
@@ -276,7 +287,7 @@ function App() {
           shadow-camera-right={20}
           shadow-camera-top={20}
           shadow-camera-bottom={-20}
-        />
+        /> */}
 
         <GameBoard
           boardData={boardData}
@@ -287,6 +298,7 @@ function App() {
           onPlaceStructure={actions.placeStructure}
           isSetupPhase={isSetupPhase}
           canInteract={canInteract}
+          highlightNumber={diceRoll}
         />
 
         <OrbitControls maxPolarAngle={Math.PI / 2.1} minDistance={5} maxDistance={30} />

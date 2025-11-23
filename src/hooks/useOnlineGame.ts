@@ -28,6 +28,7 @@ export interface NetworkState {
   players: Record<string, NetworkPlayer>;
   turnOrder: string[];
   placedStructures: PlacedStructure[];
+  lastDistributedResources: Record<string, Resources>;
   gameLog: string[];
   gamePhase: GamePhase;
   turnPhase: TurnPhaseWithLobby;

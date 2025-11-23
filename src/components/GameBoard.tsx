@@ -1,9 +1,12 @@
 import React from 'react';
+import { useLoader } from '@react-three/fiber';
+import { TextureLoader, RepeatWrapping } from 'three';
 import { HexTile } from './HexTile';
 import type { HexData } from '../../shared/types';
 import type { PlacedStructure, PlayerColor, BoardVertex, BoardEdge } from '../../shared/gameLogic';
 import { StructureManager } from './StructureManager';
 import { Settlement, Road } from './Structures';
+import tableImg from '../assets/table.png';
 
 const HEX_RADIUS = 1;
 
@@ -16,6 +19,7 @@ interface GameBoardProps {
     onPlaceStructure: (type: 'road' | 'settlement', locationId: string) => void;
     isSetupPhase: boolean;
     canInteract: boolean;
+    highlightNumber: number | null;
 }
 
 const GameBoard: React.FC<GameBoardProps> = ({
@@ -26,21 +30,22 @@ const GameBoard: React.FC<GameBoardProps> = ({
     currentPlayerColor,
     onPlaceStructure,
     isSetupPhase,
-    canInteract
+    canInteract,
+    highlightNumber
 }) => {
+  const tableTexture = useLoader(TextureLoader, tableImg);
+  tableTexture.wrapS = tableTexture.wrapT = RepeatWrapping;
+  tableTexture.repeat.set(4, 4);
 
   return (
     <group>
-      {/* Sea Plane */}
-      <mesh position={[0, -0.2, 0]} receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[15, 64]} />
-        <meshPhysicalMaterial 
-            color="#006994" 
-            transparent 
-            opacity={0.8} 
-            transmission={0.2}
-            roughness={0.1}
-            metalness={0.1}
+      {/* Table Plane */}
+      <mesh position={[0, -0.3, 0]} receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[50, 50]} />
+        <meshStandardMaterial 
+            map={tableTexture}
+            roughness={0.8}
+            metalness={0.2}
         />
       </mesh>
 
@@ -56,6 +61,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
                     z={z}
                     terrain={tile.terrain}
                     numberToken={tile.numberToken}
+                    isHighlighted={tile.numberToken === highlightNumber}
                 />
             );
         })}

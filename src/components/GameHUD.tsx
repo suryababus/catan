@@ -1,5 +1,13 @@
 import React from 'react';
 import type { Player, GamePhase, TurnPhase } from '../../shared/gameLogic';
+import type { Resources } from '../../shared/types';
+
+import brickImg from '../assets/images/resource/brick.png';
+import woodImg from '../assets/images/resource/bood.png';
+import oreImg from '../assets/images/resource/mountain.png';
+import wheatImg from '../assets/images/resource/wheat.png';
+import sheepImg from '../assets/images/resource/sheep.png';
+import unknownImg from '../assets/images/resource/wheat.png'; // Fallback or use a generic back card
 
 interface GameHUDProps {
     players: Player[];
@@ -13,7 +21,34 @@ interface GameHUDProps {
     canRollDice?: boolean;
     canEndTurn?: boolean;
     actionHint?: string;
+    lastDistributedResources?: Record<string, Resources>;
 }
+
+const RESOURCE_IMAGES: Record<string, string> = {
+    brick: brickImg,
+    wood: woodImg,
+    ore: oreImg,
+    wheat: wheatImg,
+    sheep: sheepImg,
+    unknown: unknownImg
+};
+
+const ResourceIcon: React.FC<{ type: string; size?: number }> = ({ type, size = 24 }) => {
+    const imgSrc = RESOURCE_IMAGES[type] || RESOURCE_IMAGES.unknown;
+    return (
+        <img 
+            src={imgSrc} 
+            alt={type}
+            style={{
+                width: size,
+                height: size,
+                marginBottom: '2px',
+                objectFit: 'contain'
+            }} 
+            title={type} 
+        />
+    );
+};
 
 const ResourceCard: React.FC<{ type: string; count: number; color?: string }> = ({ type, count, color }) => (
     <div style={{ 
@@ -27,7 +62,7 @@ const ResourceCard: React.FC<{ type: string; count: number; color?: string }> = 
         minWidth: '30px',
         border: color ? `2px solid ${color}` : 'none'
     }}>
-        <span style={{ fontSize: '10px', textTransform: 'capitalize' }}>{type.slice(0,2)}</span>
+        <ResourceIcon type={type} size={20} />
         <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{count}</span>
     </div>
 );
@@ -43,7 +78,8 @@ export const GameHUD: React.FC<GameHUDProps> = ({
     onEndTurn,
     canRollDice = true,
     canEndTurn = true,
-    actionHint
+    actionHint,
+    lastDistributedResources = {}
 }) => {
     return (
         <div style={{
@@ -74,14 +110,44 @@ export const GameHUD: React.FC<GameHUDProps> = ({
 
                 {/* All Players Summary */}
                 <div style={{ display: 'flex', gap: '10px' }}>
-                    {players.map(p => (
+                    {players.map(p => {
+                         const gained = lastDistributedResources[p.color];
+                         const hasGain = gained && Object.values(gained).some(v => v > 0);
+                         
+                         return (
                         <div key={p.id} style={{ 
                             padding: '5px', 
                             border: `2px solid ${p.color}`,
                             borderRadius: '5px',
                             backgroundColor: currentPlayer.id === p.id ? 'rgba(0,0,0,0.05)' : 'transparent',
-                            opacity: currentPlayer.id === p.id ? 1 : 0.7
+                            opacity: currentPlayer.id === p.id ? 1 : 0.7,
+                            position: 'relative'
                         }}>
+                            {hasGain && (
+                                <div key={`${p.id}-${diceRoll}`} className="resource-popup" style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: '0',
+                                    background: 'gold',
+                                    padding: '4px',
+                                    borderRadius: '4px',
+                                    fontSize: '12px',
+                                    fontWeight: 'bold',
+                                    display: 'flex',
+                                    gap: '4px',
+                                    zIndex: 20,
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                                    marginTop: '4px',
+                                    pointerEvents: 'none'
+                                }}>
+                                    {Object.entries(gained).map(([res, count]) => count > 0 && (
+                                         <div key={res} style={{ display: 'flex', alignItems: 'center' }}>
+                                            <span>+{count}</span>
+                                            <ResourceIcon type={res} size={16} />
+                                         </div>
+                                    ))}
+                                </div>
+                            )}
                             <div style={{ fontWeight: 'bold', color: p.color, fontSize: '14px', marginBottom: '5px' }}>
                                 {p.name} ({p.victoryPoints} VP)
                             </div>
@@ -91,7 +157,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                                 ))}
                             </div>
                         </div>
-                    ))}
+                    )})}
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
@@ -167,7 +233,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                             minWidth: '50px',
                             border: `2px solid ${currentPlayer.color}`
                         }}>
-                            <span style={{ fontSize: '14px', textTransform: 'capitalize' }}>{res}</span>
+                            <ResourceIcon type={res} size={32} />
                             <span style={{ fontWeight: 'bold', fontSize: '20px' }}>{count}</span>
                         </div>
                     ))}

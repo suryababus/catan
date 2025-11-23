@@ -1,6 +1,6 @@
 import { Room, Client } from 'colyseus';
 import { randomUUID } from 'crypto';
-import { CatanState, PlayerState, BoardHexState, VertexState, EdgeState, PlacedStructureState } from './schema/CatanState';
+import { CatanState, PlayerState, BoardHexState, VertexState, EdgeState, PlacedStructureState, PlayerResourcesState } from './schema/CatanState';
 import { generateBoard } from '../../../shared/boardUtils';
 import { generateGridDetails } from '../../../shared/gridUtils';
 import {
@@ -292,6 +292,8 @@ export class CatanRoom extends Room<CatanState> {
 
     this.state.diceRoll = roll;
     this.state.turnPhase = 'BUILDING';
+    this.state.lastDistributedResources.clear();
+
     const roller = this.getCurrentPlayer();
     this.addLog(`${roller?.name ?? 'Player'} rolled ${roll} (${d1}+${d2}).`);
 
@@ -304,6 +306,16 @@ export class CatanRoom extends Room<CatanState> {
     distribution.forEach((gain, color) => {
       const player = Array.from(this.state.players.values()).find((p) => p.color === color);
       if (!player) return;
+
+      // Record distribution for UI
+      const resState = new PlayerResourcesState();
+      resState.wood = gain.wood || 0;
+      resState.brick = gain.brick || 0;
+      resState.sheep = gain.sheep || 0;
+      resState.wheat = gain.wheat || 0;
+      resState.ore = gain.ore || 0;
+      this.state.lastDistributedResources.set(color, resState);
+
       Object.entries(gain).forEach(([resource, amount]) => {
         if (!amount) return;
         const key = resource as keyof PlayerState['resources'];
@@ -354,6 +366,7 @@ export class CatanRoom extends Room<CatanState> {
     this.state.currentPlayerIndex = (this.state.currentPlayerIndex + 1) % this.state.turnOrder.length;
     this.state.turnPhase = 'ROLL_DICE';
     this.state.diceRoll = -1;
+    this.state.lastDistributedResources.clear();
     const current = this.getCurrentPlayer();
     this.addLog(`${current?.name ?? 'Player'}'s turn.`);
   }

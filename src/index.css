@@ -5,3 +5,22 @@ html, body, #root {
   height: 100%;
   overflow: hidden;
 }
+
+@keyframes popUpAndFade {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1);
+  }
+}
+
+.resource-popup {
+  animation: popUpAndFade 2s ease-out forwards;
+}
